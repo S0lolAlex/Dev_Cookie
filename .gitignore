@@ -1,8 +1,13 @@
+#package
+/.gradle
+/.idea
+/build
+/gradle
+/out
+src/main/resources
 
-/.gradle/
-/.idea/
-/build/
-/gradle/
+# Package Files #
+settings.gradle
 gradlew
 gradlew.bat
-settings.gradle
+
