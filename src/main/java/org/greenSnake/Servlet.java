@@ -13,13 +13,14 @@ import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import java.io.IOException;
 import java.util.Map;
+
 // Set templates path
 @WebServlet("/time")
 public class Servlet extends HttpServlet {
     private TemplateEngine engine;
 
     @Override
-    public void init(){
+    public void init() {
         engine = new TemplateEngine();
 
         FileTemplateResolver resolver = new FileTemplateResolver();
@@ -34,12 +35,14 @@ public class Servlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("text/html");
-        String timezone = req.getParameterMap().containsKey("timezone") ? req.getParameter("timezone"): Time.getTime_zone();
-        resp.addCookie(new Cookie("timezone",timezone.replace(" ","+")));
+        Cookie[] lastTimezone = req.getCookies();
+        String timezone =
+                req.getParameterMap().containsKey("timezone") ? req.getParameter("timezone") : lastTimezone[0].getValue();
+        resp.addCookie(new Cookie("timezone", timezone.replace(" ", "+")));
         String time = new Time().getTime(timezone);
         Context simpleContext = new Context(
                 resp.getLocale(),
-                Map.of("params",time));
+                Map.of("params", time));
 
         engine.process("time", simpleContext, resp.getWriter());
         resp.getWriter().close();

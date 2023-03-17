@@ -16,16 +16,21 @@ public class TimeFilter extends HttpFilter {
     @Override
     public void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
             throws IOException, ServletException {
-        if (!req.getParameterMap().containsKey("timezone") & Time.getTime_zone() == null) {
-            Time.setTime_zone("UTC");
-            res.addCookie(new Cookie("timezone", Time.getTime_zone()));;
+        if (!req.getParameterMap().containsKey("timezone") & req.getCookies() == null) {
+            res.addCookie(new Cookie("timezone", "UTC"));
+            ;
             chain.doFilter(req, res);
-        }else if(!req.getParameterMap().containsKey("timezone") ){
-            Cookie[] cookies = req.getCookies();
-            Time.setTime_zone(cookies[0].getValue());
-            chain.doFilter(req,res);
-        }else if(Time.getTime_zone() != null){
-            chain.doFilter(req,res);
+        } else if (!req.getParameterMap().containsKey("timezone")) {
+            Cookie[] lastTimeZone = req.getCookies();
+            if (Time.isTimeZoneValid(lastTimeZone[0].getValue())) {
+                chain.doFilter(req, res);
+            } else {
+                res.setStatus(400);
+                res.getWriter().write("Invalid timezone1");
+                res.getWriter().close();
+            }
+        } else if (Time.isTimeZoneValid(req.getParameter("timezone"))) {
+            chain.doFilter(req, res);
         }else {
             res.setStatus(400);
             res.getWriter().write("Invalid timezone");

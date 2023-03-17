@@ -9,14 +9,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Time {
-    @Getter
-    @Setter
-    private static String time_zone = null;
     public String getTime(String zone){
         ZoneId zoneId;
-        if(!isTimeZoneValid(zone)){
-            zone = time_zone;
-        }
         zone = zone.replace(" ","+");
         zoneId = ZoneId.of(zone);
         Instant now = Instant.now();
