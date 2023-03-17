@@ -13,7 +13,7 @@ import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import java.io.IOException;
 import java.util.Map;
-
+// Set templates path
 @WebServlet("/time")
 public class Servlet extends HttpServlet {
     private TemplateEngine engine;
